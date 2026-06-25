@@ -92,7 +92,7 @@
       min-height: 0;
       display: grid;
       place-items: center;
-      padding: clamp(54px, 8svh, 76px) 16px clamp(10px, 2svh, 22px);
+      padding: clamp(18px, 4svh, 34px) 16px clamp(10px, 2svh, 22px);
       position: relative;
       z-index: 1;
     }
@@ -809,9 +809,7 @@
     }
 
     @media (max-width: 640px) {
-      .app { padding: 72px 12px 10px; }
-      .top-actions { left: 14px; right: 14px; top: 14px; }
-      .top-actions button { flex: 1; padding: 11px 16px; }
+      .app { padding: 18px 12px 10px; }
       .poster-shell { padding: 12px; }
       .image-zone {
         min-height: clamp(190px, 38svh, 250px);
@@ -824,10 +822,6 @@
   </style>
 </head>
 <body>
-  <div class="top-actions">
-    <button id="exportButton" type="button" class="primary" disabled>Export PNG</button>
-  </div>
-
   <input id="fileInput" type="file" accept="image/*" multiple />
 
   <div id="customQuoteOverlay" class="custom-quote-overlay" role="dialog" aria-modal="true" aria-labelledby="customQuoteTitle">
@@ -835,7 +829,7 @@
       <div class="custom-quote-header">
         <div>
           <h2 id="customQuoteTitle">Custom quote</h2>
-          <p>Bạn có điều gì muốn nhắn nhủ cho bản thân trong tương lai không?</p>
+          <p>Nhập câu riêng của bạn, quote sẽ hiện ngay trên poster.</p>
         </div>
         <button id="closeCustomQuoteButton" type="button" class="modal-close-btn" aria-label="Đóng">×</button>
       </div>
@@ -913,6 +907,7 @@
         <button id="insertButton" type="button" class="secondary-btn">Insert images</button>
         <button id="quoteButton" type="button">Random quote</button>
         <button id="customQuoteButton" type="button" class="ghost-btn">Custom quote</button>
+        <button id="exportButton" type="button" class="primary" disabled>Export PNG</button>
       </div>
 
       <p id="status" class="status">Bấm Insert image để bắt đầu.</p>
@@ -1060,20 +1055,20 @@
       const cy = h / 2;
       const maxDist = Math.sqrt(cx * cx + cy * cy);
 
-      // Filter params
-      const exposure = 1.05;        // nhân luminance
-      const contrast = 1.15;        // kéo xa/trung bình
-      const satDelta = -0.20;       // giảm saturation 20%
-      const vibBoost = 0.10;        // boost vibrance 10%
-      const sepiaStrength = 0.40;   // 0..1
-      const terracottaStrength = 0.15;
-      const goldStrength = 0.08;
+      // Filter params: colorful warm retro, không làm ảnh bị xỉn màu
+      const exposure = 1.06;        // nhân luminance
+      const contrast = 1.10;        // kéo xa/trung bình
+      const satDelta = 0.10;        // tăng saturation 10%
+      const vibBoost = 0.24;        // boost vibrance cho màu tươi hơn
+      const sepiaStrength = 0.18;   // giữ retro nhẹ, không ám nâu quá mạnh
+      const terracottaStrength = 0.07;
+      const goldStrength = 0.05;
       // Màu colorize (RGB 0..255)
       const tcR = 201, tcG = 122, tcB = 90;
       const gdR = 201, gdG = 160, gdB = 78;
-      const noiseAmt = 6;           // +- noise (0..255)
-      const vignetteStr = 0.40;     // 0..1
-      const vignetteSize = 0.35;    // fraction of half-diagonal for inner radius
+      const noiseAmt = 4;           // +- noise (0..255)
+      const vignetteStr = 0.24;     // 0..1
+      const vignetteSize = 0.38;    // fraction of half-diagonal for inner radius
 
       for (let py = 0; py < h; py++) {
         for (let px = 0; px < w; px++) {
@@ -1201,10 +1196,14 @@
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
 
-      /* Poster tỉ lệ ngang 4:3 */
+      /* Match current web poster aspect as closely as possible */
+      const shellRect = document.getElementById("posterShell").getBoundingClientRect();
+      const webAspect = shellRect.width > 0 && shellRect.height > 0
+        ? shellRect.height / shellRect.width
+        : 0.75;
       const posterW = 1080;
-      const posterH = 810;
-      const padding = 72;
+      const posterH = Math.round(posterW * webAspect);
+      const padding = Math.round(posterW * 0.075);
 
       canvas.width = posterW;
       canvas.height = posterH;
@@ -1281,18 +1280,22 @@
 
       /* Sticker badge removed */
 
-      /* Image frame: lớn, chiếm 70% chiều cao nội dung */
-      const headerH = 64;
-      const quoteAreaH = 130;
+      /* Image frame: match the current web frame ratio instead of using a fixed export ratio */
+      const headerH = Math.round(innerH * 0.10);
+      const quoteAreaH = Math.round(innerH * 0.20);
       const imageAreaY = innerY + headerH + 10;
       const imageAreaH = innerH - headerH - quoteAreaH - 14;
       const imageAreaW = innerW;
 
       const framePad = 16;
       const frameW = imageAreaW - framePad * 2;
-      const frameH = imageAreaH - framePad * 2;
+      const webImageFrame = document.querySelector(".image-frame").getBoundingClientRect();
+      const webFrameAspect = webImageFrame.width > 0 && webImageFrame.height > 0
+        ? webImageFrame.height / webImageFrame.width
+        : 0.72;
+      const frameH = Math.min(imageAreaH - framePad * 2, Math.round(frameW * webFrameAspect));
       const frameX = innerX + (innerW - frameW) / 2;
-      const frameY = imageAreaY + framePad;
+      const frameY = imageAreaY + framePad + Math.max(0, (imageAreaH - frameH - framePad * 2) / 2);
 
       ctx.save();
       ctx.translate(frameX + frameW / 2, frameY + frameH / 2);
