@@ -1,0 +1,1634 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Motivation Flip Album</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,800;1,600;1,800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-1: #fff7f1;
+      --bg-2: #ffe9ee;
+      --bg-3: #eaf5ff;
+      --paper: #fffaf6;
+      --paper-warm: #ffeef2;
+      --ink: #30251f;
+      --ink-soft: #5c4a40;
+      --muted: #9b8174;
+      --muted-light: #b99a8d;
+      --pink: #e986a7;
+      --pink-soft: #ffe0ea;
+      --gold: #d8a94f;
+      --gold-soft: rgba(216, 169, 79, 0.16);
+      --red: #c65f6f;
+      --cream: #3a2c26;
+      --terracotta: #e98f73;
+      --shadow-soft: rgba(156, 101, 82, 0.18);
+      --shadow-strong: rgba(156, 101, 82, 0.28);
+      --border: rgba(232, 143, 115, 0.12);
+      --border-strong: rgba(232, 143, 115, 0.22);
+      --font-sans: "Be Vietnam Pro", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-serif: "Playfair Display", Georgia, "Times New Roman", serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      min-height: 100%;
+      margin: 0;
+      font-family: var(--font-sans);
+      color: var(--cream);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ---- Warm animated background: terracotta/amber tone ---- */
+    body {
+      overflow-x: hidden;
+      background-color: var(--bg-1);
+      background-image:
+        radial-gradient(ellipse at 18% 12%, rgba(255, 183, 197, 0.42), transparent 42%),
+        radial-gradient(ellipse at 84% 86%, rgba(184, 222, 255, 0.34), transparent 42%),
+        radial-gradient(ellipse at 52% 50%, rgba(255, 226, 145, 0.18), transparent 52%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2) 52%, var(--bg-3));
+      position: relative;
+    }
+
+    /* Grain overlay trên toàn page */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* Floating blobs động */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(circle at 70% 30%, rgba(255, 159, 184, 0.16), transparent 25%),
+        radial-gradient(circle at 30% 70%, rgba(141, 202, 255, 0.12), transparent 25%);
+      animation: blobShift 20s ease-in-out infinite alternate;
+    }
+
+    @keyframes blobShift {
+      0% { transform: scale(1) rotate(0deg); }
+      100% { transform: scale(1.15) rotate(5deg); }
+    }
+
+    .app {
+      height: 100svh;
+      min-height: 0;
+      display: grid;
+      place-items: center;
+      padding: clamp(54px, 8svh, 76px) 16px clamp(10px, 2svh, 22px);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ---- Top actions ---- */
+    .top-actions {
+      position: fixed;
+      top: 22px;
+      right: 22px;
+      z-index: 10;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    button {
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      padding: 13px 22px;
+      background: rgba(255, 255, 255, 0.66);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 24px var(--shadow-soft);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      background: rgba(255, 255, 255, 0.86);
+      box-shadow: 0 12px 28px var(--shadow-strong);
+    }
+
+    button:active { transform: translateY(1px); }
+    button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    button.primary {
+      background: rgba(232, 143, 115, 0.18);
+      color: #7a4a3d;
+      border-color: rgba(232, 143, 115, 0.28);
+    }
+
+    button.primary:hover {
+      background: rgba(232, 143, 115, 0.28);
+      color: #5f362c;
+    }
+
+    button.primary:disabled {
+      background: rgba(255, 255, 255, 0.5);
+      color: rgba(91, 70, 62, 0.42);
+      border-color: rgba(232, 143, 115, 0.12);
+      box-shadow: none;
+    }
+
+    button.secondary-btn {
+      background: rgba(255, 255, 255, 0.72);
+      color: #8a5b50;
+      border-color: rgba(232, 143, 115, 0.2);
+    }
+
+    button.secondary-btn:hover {
+      background: rgba(255, 244, 247, 0.94);
+      color: #6f453c;
+    }
+
+    button.ghost-btn {
+      background: rgba(255, 255, 255, 0.56);
+      color: #8a6b60;
+      border-color: rgba(138, 107, 96, 0.16);
+    }
+
+    button.ghost-btn:hover {
+      background: rgba(255, 255, 255, 0.86);
+      color: #5f4940;
+    }
+
+    /* ---- Stage ---- */
+    .stage {
+      width: min(560px, 100%);
+      display: grid;
+      gap: clamp(8px, 1.7svh, 18px);
+      justify-items: center;
+    }
+
+    /* ---- App title: ngoài poster, trên cùng ---- */
+    .app-title {
+      text-align: center;
+      margin-bottom: 4px;
+    }
+
+    .app-title h1 {
+      margin: 0;
+      font-family: var(--font-serif);
+      font-size: clamp(1.45rem, 4.5vw, 2.25rem);
+      font-weight: 800;
+      font-style: italic;
+      color: #b86f7e;
+      letter-spacing: 0.02em;
+      background: linear-gradient(90deg, #b86f7e, #d8a94f, #7aaac7);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 8px 28px rgba(184, 111, 126, 0.18);
+    }
+
+    .app-title .subtitle {
+      display: block;
+      margin-top: 4px;
+      font-family: var(--font-sans);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.8;
+    }
+
+    /* ---- Poster shell: khung ngang, ảnh lớn + quote card KHÔNG đè ---- */
+    .poster-shell {
+      width: min(540px, calc(100vw - 32px));
+      padding: clamp(14px, 2.5svh, 20px);
+      background: linear-gradient(145deg, #ffffff, #fff1f5);
+      border-radius: 4px;
+      border: clamp(8px, 1.8svh, 12px) solid #ffffff;
+      box-shadow:
+        0 1px 2px rgba(40, 25, 15, 0.08),
+        0 24px 52px var(--shadow-strong),
+        28px 32px 52px rgba(40, 25, 15, 0.15),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.9);
+      animation: floatPoster 7s ease-in-out infinite;
+    }
+
+    .poster {
+      position: relative;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      background:
+        radial-gradient(ellipse at 15% 12%, rgba(255, 220, 200, 0.45), transparent 30%),
+        radial-gradient(ellipse at 85% 88%, rgba(255, 200, 180, 0.20), transparent 30%),
+        linear-gradient(145deg, #fffaf6, #ffeef2);
+    }
+
+    /* Grain texture trên poster */
+    .poster::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.5;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.03'/%3E%3C/svg%3E");
+    }
+
+    /* ---- Date stamp (trong poster) ---- */
+    .date-stamp {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: clamp(10px, 1.8svh, 14px) 18px 0;
+      z-index: 2;
+      flex-shrink: 0;
+    }
+
+    .date-stamp .stamp-label {
+      font-family: var(--font-sans);
+      font-size: 0.6rem;
+      font-weight: 900;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .sticker {
+      display: inline-grid;
+      place-items: center;
+      min-width: 30px;
+      min-height: 30px;
+      border-radius: 999px;
+      background: #fff;
+      box-shadow: 0 4px 10px rgba(40, 25, 15, 0.08);
+      font-size: 0.88rem;
+    }
+
+    /* ---- Image zone: chiếm phần lớn poster ---- */
+    .image-zone {
+      flex: 1 1 auto;
+      min-height: clamp(210px, 43svh, 340px);
+      display: grid;
+      grid-template-columns: 44px 1fr 44px;
+      align-items: center;
+      gap: 8px;
+      padding: clamp(10px, 1.8svh, 14px) 14px clamp(8px, 1.4svh, 10px);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ---- Nav arrows ---- */
+    .nav-arrow {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border: none;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--terracotta);
+      font-size: 1.25rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(40, 25, 15, 0.12);
+      opacity: 0;
+      transition: opacity 200ms ease, transform 160ms ease;
+      pointer-events: none;
+      padding: 0;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+
+    .nav-arrow.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .nav-arrow:hover {
+      transform: scale(1.1);
+      background: #fff;
+      box-shadow: 0 6px 16px rgba(40, 25, 15, 0.18);
+    }
+
+    .nav-arrow:active { transform: scale(0.95); }
+
+    .nav-arrow:disabled { opacity: 0.0; cursor: default; pointer-events: none; }
+
+    .nav-arrow.left { grid-column: 1; }
+    .nav-arrow.right { grid-column: 3; }
+
+    .image-frame-col {
+      grid-column: 2;
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ---- Image counter ---- */
+    .image-counter {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-sans);
+      font-size: 0.6rem;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      z-index: 4;
+      background: rgba(255, 255, 255, 0.85);
+      padding: 3px 10px;
+      border-radius: 999px;
+      opacity: 0;
+      transition: opacity 200ms ease;
+    }
+
+    .image-counter.visible { opacity: 1; }
+
+    .image-frame {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-1.2deg);
+      padding: 12px;
+      background: #ffffff;
+      border-radius: 3px;
+      box-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.06),
+        0 14px 30px rgba(0, 0, 0, 0.18),
+        0 0 0 1px rgba(150, 105, 124, 0.06);
+    }
+
+    .main-image {
+      width: 100%;
+      height: 100%;
+      min-height: clamp(180px, 35svh, 270px);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border-radius: 2px;
+      background:
+        radial-gradient(circle at 50% 38%, rgba(255, 213, 224, 0.48), transparent 36%),
+        linear-gradient(135deg, rgba(255, 250, 246, 0.96), rgba(255, 238, 242, 0.88));
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 700;
+      line-height: 1.6;
+      font-family: var(--font-sans);
+    }
+
+    .main-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      animation: imageIn 420ms ease both;
+    }
+
+    .main-image canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      animation: imageIn 420ms ease both;
+    }
+
+    /* ---- Washi tape ---- */
+    .tape {
+      position: absolute;
+      z-index: 3;
+      width: 88px;
+      height: 26px;
+      border-radius: 3px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+      opacity: 0.85;
+      pointer-events: none;
+    }
+
+    .tape.one {
+      left: 14px;
+      top: -10px;
+      transform: rotate(-9deg);
+      background: repeating-linear-gradient(
+        135deg,
+        rgba(255, 235, 180, 0.75) 0px,
+        rgba(255, 235, 180, 0.75) 8px,
+        rgba(255, 220, 160, 0.65) 8px,
+        rgba(255, 220, 160, 0.65) 16px
+      );
+    }
+
+    .tape.two {
+      right: 14px;
+      bottom: -10px;
+      transform: rotate(7deg);
+      background: repeating-linear-gradient(
+        135deg,
+        rgba(224, 124, 168, 0.35) 0px,
+        rgba(224, 124, 168, 0.35) 8px,
+        rgba(197, 102, 148, 0.28) 8px,
+        rgba(197, 102, 148, 0.28) 16px
+      );
+    }
+
+    /* ---- Quote zone: NĂM DƯỚI ảnh, KHÔNG đè ---- */
+    .quote-zone {
+      flex-shrink: 0;
+      padding: clamp(12px, 2svh, 18px) 20px clamp(12px, 2svh, 18px);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      text-align: center;
+      border-top: 1px solid rgba(201, 160, 78, 0.12);
+    }
+
+    .quote {
+      margin: 0;
+      color: var(--ink);
+      font-family: var(--font-serif);
+      font-size: clamp(1rem, 2.8vw, 1.35rem);
+      line-height: 1.3;
+      font-weight: 600;
+      font-style: italic;
+      text-wrap: balance;
+      letter-spacing: 0.01em;
+    }
+
+    .date {
+      margin: 0;
+      color: var(--red);
+      font-family: var(--font-sans);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    /* ---- Floating plane ---- */
+    .paper-plane {
+      position: fixed;
+      left: -88px;
+      top: 18%;
+      width: 56px;
+      height: 56px;
+      color: rgba(201, 122, 90, 0.35);
+      filter: drop-shadow(0 12px 20px rgba(40, 25, 15, 0.2));
+      animation: paperPlane 16s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .paper-plane svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(12deg);
+    }
+
+    /* ---- Footer ---- */
+    .status {
+      min-height: 18px;
+      color: var(--muted-light);
+      font-family: var(--font-sans);
+      font-size: 0.76rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .secondary-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    input[type="file"] { display: none; }
+
+    /* ---- Custom quote modal ---- */
+    .custom-quote-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      place-items: center;
+      padding: 20px;
+      background: rgba(58, 44, 38, 0.18);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .custom-quote-overlay.visible { display: grid; }
+
+    .custom-quote-card {
+      width: min(430px, calc(100vw - 32px));
+      padding: 24px;
+      border: 1px solid rgba(232, 143, 115, 0.2);
+      border-radius: 26px;
+      background:
+        radial-gradient(circle at 16% 8%, rgba(255, 213, 224, 0.86), transparent 34%),
+        linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(255, 247, 250, 0.98));
+      color: var(--ink);
+      box-shadow: 0 28px 78px rgba(156, 101, 82, 0.28);
+    }
+
+    .custom-quote-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: start;
+      margin-bottom: 14px;
+    }
+
+    .custom-quote-card h2 {
+      margin: 0 0 4px;
+      font-family: var(--font-serif);
+      font-size: 1.45rem;
+      line-height: 1.2;
+      color: #7a4a3d;
+    }
+
+    .custom-quote-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    .modal-close-btn {
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: #9a8b84;
+      box-shadow: none;
+      font-size: 1.15rem;
+      line-height: 1;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+
+    .modal-close-btn:hover {
+      background: transparent;
+      color: #6f625c;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .custom-quote-input {
+      width: 100%;
+      min-height: 112px;
+      resize: vertical;
+      padding: 14px 16px;
+      border: 1px solid rgba(232, 143, 115, 0.22);
+      border-radius: 18px;
+      outline: none;
+      background: rgba(255, 255, 255, 0.74);
+      color: var(--ink);
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      font-style: italic;
+      line-height: 1.45;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    .custom-quote-input:focus {
+      border-color: rgba(232, 143, 115, 0.46);
+      box-shadow:
+        0 0 0 4px rgba(255, 224, 234, 0.72),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    .custom-quote-input::placeholder { color: rgba(138, 107, 96, 0.52); }
+
+    .custom-quote-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .quote-hint {
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-left: auto;
+    }
+
+    @media (max-width: 640px) {
+      .custom-quote-card { padding: 20px; }
+      .custom-quote-input { min-height: 96px; }
+    }
+
+    /* ---- Step-by-step quick tour ---- */
+    .tour-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: none;
+      padding: 20px;
+      background: rgba(58, 44, 38, 0.14);
+      pointer-events: none;
+    }
+
+    .tour-overlay.visible { display: block; }
+
+    body.tour-active .app { z-index: 35; }
+
+    .tour-focus {
+      position: relative;
+      z-index: 45 !important;
+      border-radius: 999px;
+      outline: 3px solid rgba(255, 185, 203, 0.95);
+      opacity: 1 !important;
+      transform: translateY(-1px) scale(1.04);
+      box-shadow:
+        0 0 0 8px rgba(255, 255, 255, 0.76),
+        0 20px 52px rgba(156, 101, 82, 0.32) !important;
+    }
+
+    .poster-shell.tour-focus {
+      border-radius: 8px;
+      transform: scale(1.01);
+    }
+
+    .tour-card {
+      position: fixed;
+      z-index: 90;
+      width: min(360px, calc(100vw - 32px));
+      padding: 34px 20px 20px;
+      border: 1px solid rgba(232, 143, 115, 0.2);
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at 14% 10%, rgba(255, 213, 224, 0.84), transparent 32%),
+        linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(255, 246, 249, 0.98));
+      color: var(--ink);
+      box-shadow: 0 26px 70px rgba(156, 101, 82, 0.26);
+      pointer-events: auto;
+    }
+
+    .tour-step-label {
+      display: inline-flex;
+      margin-bottom: 10px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(255, 224, 234, 0.9);
+      color: #8a5b50;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .tour-card h2 {
+      margin: 0 0 8px;
+      font-family: var(--font-serif);
+      font-size: 1.55rem;
+      line-height: 1.2;
+      color: var(--ink);
+    }
+
+    .tour-card p {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .tour-dots {
+      display: flex;
+      gap: 6px;
+      margin: 18px 0 20px;
+    }
+
+    .tour-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(138, 107, 96, 0.2);
+    }
+
+    .tour-dot.active {
+      width: 24px;
+      background: rgba(232, 143, 115, 0.7);
+    }
+
+    .tour-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    #closeTourButton {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: #9a8b84;
+      box-shadow: none;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+
+    #closeTourButton:hover {
+      background: transparent;
+      color: #6f625c;
+      box-shadow: none;
+      transform: none;
+    }
+
+    @media (max-width: 720px) {
+      .tour-card {
+        left: 16px !important;
+        right: 16px !important;
+        top: 16px !important;
+        bottom: auto !important;
+        width: auto;
+      }
+    }
+
+    /* ---- Keyframes ---- */
+    @keyframes floatPoster {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    @keyframes imageIn {
+      from { opacity: 0; transform: scale(1.04); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes paperPlane {
+      0% { transform: translate3d(0, 0, 0) rotate(-8deg); }
+      36% { transform: translate3d(42vw, -26px, 0) rotate(9deg); }
+      72% { transform: translate3d(78vw, 38px, 0) rotate(-4deg); }
+      100% { transform: translate3d(calc(100vw + 140px), -12px, 0) rotate(10deg); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .poster-shell, .paper-plane, .main-image img, body::after { animation: none; }
+    }
+
+    @media (max-width: 640px) {
+      .app { padding: 72px 12px 10px; }
+      .top-actions { left: 14px; right: 14px; top: 14px; }
+      .top-actions button { flex: 1; padding: 11px 16px; }
+      .poster-shell { padding: 12px; }
+      .image-zone {
+        min-height: clamp(190px, 38svh, 250px);
+        padding: 10px 12px 8px;
+      }
+      .quote-zone { padding: 10px 14px 12px; }
+      .secondary-actions button { padding: 11px 14px; font-size: 0.78rem; }
+      .status { font-size: 0.72rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-actions">
+    <button id="exportButton" type="button" class="primary" disabled>Export PNG</button>
+  </div>
+
+  <input id="fileInput" type="file" accept="image/*" multiple />
+
+  <div id="customQuoteOverlay" class="custom-quote-overlay" role="dialog" aria-modal="true" aria-labelledby="customQuoteTitle">
+    <section class="custom-quote-card">
+      <div class="custom-quote-header">
+        <div>
+          <h2 id="customQuoteTitle">Custom quote</h2>
+          <p>Bạn có điều gì muốn nhắn nhủ cho bản thân trong tương lai không?</p>
+        </div>
+        <button id="closeCustomQuoteButton" type="button" class="modal-close-btn" aria-label="Đóng">×</button>
+      </div>
+
+      <textarea id="customQuoteInput" class="custom-quote-input" maxlength="90" placeholder="Ví dụ: One small step today, one better version tomorrow."></textarea>
+
+      <div class="custom-quote-footer">
+        <span id="customQuoteCount" class="quote-hint">0 / 90</span>
+        <div class="modal-actions">
+          <button id="cancelCustomQuoteButton" type="button" class="ghost-btn">Cancel</button>
+          <button id="saveCustomQuoteButton" type="button" class="secondary-btn">Use quote</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="tourOverlay" class="tour-overlay" role="dialog" aria-modal="true" aria-labelledby="tourTitle">
+    <section id="tourCard" class="tour-card">
+      <span id="tourStepLabel" class="tour-step-label">Step 1 / 4</span>
+      <h2 id="tourTitle">Insert images</h2>
+      <p id="tourText">Chọn một hoặc nhiều ảnh từ máy để đưa vào khung poster.</p>
+      <div id="tourDots" class="tour-dots" aria-hidden="true"></div>
+
+      <div class="tour-actions">
+        <button id="closeTourButton" type="button">Skip tour</button>
+        <button id="tourBackButton" type="button" class="ghost-btn">Back</button>
+        <button id="tourNextButton" type="button" class="secondary-btn">Next</button>
+      </div>
+    </section>
+  </div>
+
+  <main class="app">
+    <div class="paper-plane" aria-hidden="true">
+      <svg viewBox="0 0 96 96" fill="none">
+        <path d="M86 12 10 45l28 10 12 29 36-72Z" fill="currentColor" opacity="0.88"/>
+        <path d="M38 55 86 12 50 84l-7-24-5-5Z" fill="rgba(255, 255, 255, 0.62)"/>
+        <path d="M38 55 86 12" stroke="rgba(201, 122, 90, 0.2)" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <section class="stage">
+      <div class="app-title">
+        <h1>Motivation Flip Album</h1>
+        <span class="subtitle">Daily inspiration, one frame at a time</span>
+      </div>
+
+      <section id="posterShell" class="poster-shell" aria-live="polite">
+        <article class="poster">
+          <div class="date-stamp">
+            <span class="stamp-label" id="dateStamp">—</span>
+          </div>
+
+          <div class="image-zone">
+            <button id="navLeft" class="nav-arrow left" type="button" aria-label="Ảnh trước">‹</button>
+            <div class="image-frame-col">
+              <div class="image-frame">
+                <div class="tape one"></div>
+                <div class="tape two"></div>
+                <div id="mainImage" class="main-image">
+                  Insert ảnh<br />để tạo poster
+                </div>
+                <span id="imageCounter" class="image-counter">1 / 1</span>
+              </div>
+            </div>
+            <button id="navRight" class="nav-arrow right" type="button" aria-label="Ảnh sau">›</button>
+          </div>
+
+          <div class="quote-zone">
+            <p id="quote" class="quote">Done is better than perfect.</p>
+          </div>
+        </article>
+      </section>
+
+      <div class="secondary-actions">
+        <button id="insertButton" type="button" class="secondary-btn">Insert images</button>
+        <button id="quoteButton" type="button">Random quote</button>
+        <button id="customQuoteButton" type="button" class="ghost-btn">Custom quote</button>
+      </div>
+
+      <p id="status" class="status">Bấm Insert image để bắt đầu.</p>
+    </section>
+  </main>
+
+  <script>
+    const quotes = [
+      "Done is better than perfect.",
+      "Start small. Stay consistent.",
+      "Progress over perfection.",
+      "Keep going.",
+      "One step at a time.",
+      "Show up daily.",
+      "Small wins add up.",
+      "Discipline beats motivation.",
+      "Do it scared.",
+      "Rest, don\'t quit.",
+      "Focus. Execute. Repeat.",
+      "Slow progress is still progress.",
+      "Be your own competition.",
+      "Trust the process.",
+      "Make today count.",
+      "Push through.",
+      "Less talk. More action.",
+      "Build the habit.",
+      "You\'ve got this.",
+      "Stay the course."
+    ];
+
+    const insertButton = document.getElementById("insertButton");
+    const exportButton = document.getElementById("exportButton");
+    const quoteButton = document.getElementById("quoteButton");
+    const customQuoteButton = document.getElementById("customQuoteButton");
+    const customQuoteOverlay = document.getElementById("customQuoteOverlay");
+    const customQuoteInput = document.getElementById("customQuoteInput");
+    const customQuoteCount = document.getElementById("customQuoteCount");
+    const closeCustomQuoteButton = document.getElementById("closeCustomQuoteButton");
+    const cancelCustomQuoteButton = document.getElementById("cancelCustomQuoteButton");
+    const saveCustomQuoteButton = document.getElementById("saveCustomQuoteButton");
+    const closeTourButton = document.getElementById("closeTourButton");
+    const tourBackButton = document.getElementById("tourBackButton");
+    const tourNextButton = document.getElementById("tourNextButton");
+    const tourOverlay = document.getElementById("tourOverlay");
+    const tourCard = document.getElementById("tourCard");
+    const tourStepLabel = document.getElementById("tourStepLabel");
+    const tourTitle = document.getElementById("tourTitle");
+    const tourText = document.getElementById("tourText");
+    const tourDots = document.getElementById("tourDots");
+    const fileInput = document.getElementById("fileInput");
+    const mainImage = document.getElementById("mainImage");
+    const quoteEl = document.getElementById("quote");
+    const dateStampEl = document.getElementById("dateStamp");
+    const statusEl = document.getElementById("status");
+    const navLeft = document.getElementById("navLeft");
+    const navRight = document.getElementById("navRight");
+    const imageCounter = document.getElementById("imageCounter");
+
+    let imageList = [];
+    let currentIndex = 0;
+    let currentQuote = quoteEl.textContent;
+
+    function setStatus(message) {
+      statusEl.textContent = message;
+    }
+
+    function setToday() {
+      const now = new Date();
+      const date = now.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+      document.getElementById("dateStamp").textContent = date;
+    }
+
+    function pickRandomQuote() {
+      if (quotes.length === 1) return quotes[0];
+      let nextQuote = quotes[Math.floor(Math.random() * quotes.length)];
+      while (nextQuote === currentQuote) {
+        nextQuote = quotes[Math.floor(Math.random() * quotes.length)];
+      }
+      return nextQuote;
+    }
+
+    function changeQuote() {
+      currentQuote = pickRandomQuote();
+      quoteEl.textContent = currentQuote;
+    }
+
+    function loadImageFromFile(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const image = new Image();
+          image.onload = () => resolve({ image, src: reader.result });
+          image.onerror = reject;
+          image.src = reader.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function drawRoundedRect(ctx, x, y, width, height, radius) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+    }
+
+    function drawContainImage(ctx, image, x, y, width, height) {
+      const imageRatio = image.width / image.height;
+      const boxRatio = width / height;
+
+      let drawWidth = width;
+      let drawHeight = height;
+
+      if (imageRatio > boxRatio) {
+        drawHeight = width / imageRatio;
+      } else {
+        drawWidth = height * imageRatio;
+      }
+
+      const drawX = x + (width - drawWidth) / 2;
+      const drawY = y + (height - drawHeight) / 2;
+
+      ctx.drawImage(image, drawX, drawY, drawWidth, drawHeight);
+    }
+
+    /* Clamp helper */
+    function clamp8(v) { return v < 0 ? 0 : v > 255 ? 255 : v; }
+
+    /* Áp filter retro bằng Canvas API thuần: warm terracotta tone, không cần thư viện ngoài */
+    function applyRetroFilter(canvas) {
+      const ctx = canvas.getContext("2d");
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imageData.data;
+      const w = canvas.width;
+      const h = canvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
+      const maxDist = Math.sqrt(cx * cx + cy * cy);
+
+      // Filter params
+      const exposure = 1.05;        // nhân luminance
+      const contrast = 1.15;        // kéo xa/trung bình
+      const satDelta = -0.20;       // giảm saturation 20%
+      const vibBoost = 0.10;        // boost vibrance 10%
+      const sepiaStrength = 0.40;   // 0..1
+      const terracottaStrength = 0.15;
+      const goldStrength = 0.08;
+      // Màu colorize (RGB 0..255)
+      const tcR = 201, tcG = 122, tcB = 90;
+      const gdR = 201, gdG = 160, gdB = 78;
+      const noiseAmt = 6;           // +- noise (0..255)
+      const vignetteStr = 0.40;     // 0..1
+      const vignetteSize = 0.35;    // fraction of half-diagonal for inner radius
+
+      for (let py = 0; py < h; py++) {
+        for (let px = 0; px < w; px++) {
+          let i = (py * w + px) * 4;
+          let r = data[i], g = data[i + 1], b = data[i + 2];
+
+          // Luminance (perceptual)
+          let lum = 0.299 * r + 0.587 * g + 0.114 * b;
+
+          // Exposure
+          lum *= exposure;
+
+          // Contrast around midpoint
+          lum = (lum - 128) * contrast + 128;
+
+          // Saturation: kéo pixel về lum (giảm saturation)
+          r = lum + (r - lum) * (1 + satDelta);
+          g = lum + (g - lum) * (1 + satDelta);
+          b = lum + (b - lum) * (1 + satDelta);
+
+          // Vibrance: boost saturation cho pixel ít saturation hơn
+          let currSat = Math.max(r, g, b) - Math.min(r, g, b);
+          let vibFactor = 1 + vibBoost * (1 - currSat / 255);
+          let newLum = 0.299 * r + 0.587 * g + 0.114 * b;
+          r = newLum + (r - newLum) * vibFactor;
+          g = newLum + (g - newLum) * vibFactor;
+          b = newLum + (b - newLum) * vibFactor;
+
+          // Sepia: ma trận brown tone
+          let sr = 0.393 * r + 0.769 * g + 0.189 * b;
+          let sg = 0.349 * r + 0.686 * g + 0.168 * b;
+          let sb = 0.272 * r + 0.534 * g + 0.131 * b;
+          r = r + (sr - r) * sepiaStrength;
+          g = g + (sg - g) * sepiaStrength;
+          b = b + (sb - b) * sepiaStrength;
+
+          // Colorize terracotta
+          r = r * (1 - terracottaStrength) + tcR * terracottaStrength;
+          g = g * (1 - terracottaStrength) + tcG * terracottaStrength;
+          b = b * (1 - terracottaStrength) + tcB * terracottaStrength;
+
+          // Colorize gold
+          r = r * (1 - goldStrength) + gdR * goldStrength;
+          g = g * (1 - goldStrength) + gdG * goldStrength;
+          b = b * (1 - goldStrength) + gdB * goldStrength;
+
+          // Noise (grain)
+          const n = (Math.random() - 0.5) * 2 * noiseAmt;
+          r += n; g += n; b += n;
+
+          // Vignette: tối viền
+          const dx = px - cx;
+          const dy = py - cy;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const vigRadius = maxDist * (1 - vignetteSize);
+          let vig = 1;
+          if (dist > vigRadius) {
+            vig = 1 - vignetteStr * ((dist - vigRadius) / (maxDist - vigRadius));
+          }
+          r *= vig; g *= vig; b *= vig;
+
+          data[i] = clamp8(r);
+          data[i + 1] = clamp8(g);
+          data[i + 2] = clamp8(b);
+        }
+      }
+
+      ctx.putImageData(imageData, 0, 0);
+    }
+
+    /* Vẽ ảnh lên canvas con, áp filter retro, rồi draw lên canvas chính */
+    function drawRetroImage(ctx, image, x, y, width, height) {
+      /* Downscale trước khi filter để tăng tốc độ export */
+      const maxFilterDim = 600;
+      let fw = width, fh = height;
+      if (fw > maxFilterDim || fh > maxFilterDim) {
+        const ratio = maxFilterDim / Math.max(fw, fh);
+        fw = Math.round(fw * ratio);
+        fh = Math.round(fh * ratio);
+      }
+      const tmp = document.createElement("canvas");
+      tmp.width = fw;
+      tmp.height = fh;
+      const tmpCtx = tmp.getContext("2d");
+      tmpCtx.fillStyle = "#fffaf6";
+      tmpCtx.fillRect(0, 0, fw, fh);
+      drawContainImage(tmpCtx, image, 0, 0, fw, fh);
+      applyRetroFilter(tmp);
+      /* Scale lại lên kích thước gốc khi vẽ lên canvas chính */
+      ctx.drawImage(tmp, x, y, width, height);
+    }
+
+    function wrapText(ctx, text, maxWidth) {
+      const words = text.split(/\s+/);
+      const lines = [];
+      let line = "";
+      for (const word of words) {
+        const testLine = line ? line + " " + word : word;
+        if (ctx.measureText(testLine).width > maxWidth && line) {
+          lines.push(line);
+          line = word;
+        } else {
+          line = testLine;
+        }
+      }
+      if (line) lines.push(line);
+      return lines;
+    }
+
+    async function exportPoster() {
+      if (imageList.length === 0 || !imageList[currentIndex]) {
+        setStatus("Insert ảnh trước khi export.");
+        return;
+      }
+      const selectedImage = imageList[currentIndex].image;
+
+      setStatus("Đang export...");
+
+      if (document.fonts) {
+        try { await document.fonts.load('italic 600 36px "Playfair Display"'); } catch(e) {}
+        try { await document.fonts.load('900 22px "Be Vietnam Pro"'); } catch(e) {}
+        try { await document.fonts.load('800 24px "Be Vietnam Pro"'); } catch(e) {}
+      }
+
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      /* Poster tỉ lệ ngang 4:3 */
+      const posterW = 1080;
+      const posterH = 810;
+      const padding = 72;
+
+      canvas.width = posterW;
+      canvas.height = posterH;
+
+      /* Background: warm terracotta gradient */
+      const bgGrad = ctx.createLinearGradient(0, 0, posterW, posterH);
+      bgGrad.addColorStop(0, "#fff7f1");
+      bgGrad.addColorStop(0.55, "#ffe9ee");
+      bgGrad.addColorStop(1, "#eaf5ff");
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, posterW, posterH);
+
+      /* Soft cute glow top-left */
+      const glowGrad = ctx.createRadialGradient(
+        posterW * 0.2, posterH * 0.1, 0,
+        posterW * 0.2, posterH * 0.1, posterW * 0.45
+      );
+      glowGrad.addColorStop(0, "rgba(255, 183, 197, 0.34)");
+      glowGrad.addColorStop(1, "rgba(255, 183, 197, 0)");
+      ctx.fillStyle = glowGrad;
+      ctx.fillRect(0, 0, posterW, posterH);
+
+      const blueGlow = ctx.createRadialGradient(
+        posterW * 0.82, posterH * 0.86, 0,
+        posterW * 0.82, posterH * 0.86, posterW * 0.42
+      );
+      blueGlow.addColorStop(0, "rgba(184, 222, 255, 0.28)");
+      blueGlow.addColorStop(1, "rgba(184, 222, 255, 0)");
+      ctx.fillStyle = blueGlow;
+      ctx.fillRect(0, 0, posterW, posterH);
+
+      /* Outer poster card with shadow */
+      const cardX = padding;
+      const cardY = padding;
+      const cardW = posterW - padding * 2;
+      const cardH = posterH - padding * 2;
+
+      /* Outer white border (polaroid style) */
+      ctx.shadowColor = "rgba(40, 25, 15, 0.45)";
+      ctx.shadowBlur = 52;
+      ctx.shadowOffsetX = 24;
+      ctx.shadowOffsetY = 32;
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(cardX, cardY, cardW, cardH);
+      ctx.shadowColor = "transparent";
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+
+      /* Inner poster area */
+      const inner = 52;
+      const innerX = cardX + inner;
+      const innerY = cardY + inner;
+      const innerW = cardW - inner * 2;
+      const innerH = cardH - inner * 2;
+
+      /* Inner border line inside white border */
+      ctx.strokeStyle = "rgba(201, 160, 78, 0.15)";
+      ctx.lineWidth = 1;
+      ctx.strokeRect(innerX - 20, innerY - 20, innerW + 40, innerH + 40);
+
+      const innerGrad = ctx.createLinearGradient(innerX, innerY, innerX + innerW, innerY + innerH);
+      innerGrad.addColorStop(0, "#fffaf6");
+      innerGrad.addColorStop(1, "#ffeef2");
+      ctx.fillStyle = innerGrad;
+      ctx.fillRect(innerX, innerY, innerW, innerH);
+
+      /* Date stamp inside poster */
+      ctx.fillStyle = "#8a7a6a";
+      ctx.font = '900 20px "Be Vietnam Pro", Arial';
+      ctx.textAlign = "left";
+      ctx.textBaseline = "top";
+      ctx.fillText(document.getElementById("dateStamp").textContent, innerX + 24, innerY + 24);
+
+      /* Sticker badge removed */
+
+      /* Image frame: lớn, chiếm 70% chiều cao nội dung */
+      const headerH = 64;
+      const quoteAreaH = 130;
+      const imageAreaY = innerY + headerH + 10;
+      const imageAreaH = innerH - headerH - quoteAreaH - 14;
+      const imageAreaW = innerW;
+
+      const framePad = 16;
+      const frameW = imageAreaW - framePad * 2;
+      const frameH = imageAreaH - framePad * 2;
+      const frameX = innerX + (innerW - frameW) / 2;
+      const frameY = imageAreaY + framePad;
+
+      ctx.save();
+      ctx.translate(frameX + frameW / 2, frameY + frameH / 2);
+      ctx.rotate(-1.2 * Math.PI / 180);
+
+      ctx.shadowColor = "rgba(0, 0, 0, 0.18)";
+      ctx.shadowBlur = 32;
+      ctx.shadowOffsetY = 14;
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(-frameW / 2, -frameH / 2, frameW, frameH);
+      ctx.shadowColor = "transparent";
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetY = 0;
+
+      const imgPad = 20;
+      drawRetroImage(ctx, selectedImage,
+        -frameW / 2 + imgPad,
+        -frameH / 2 + imgPad,
+        frameW - imgPad * 2,
+        frameH - imgPad * 2
+      );
+      ctx.restore();
+
+      /* Washi tape 1 (gold, top-left) */
+      ctx.save();
+      ctx.translate(frameX + 24, frameY - 12);
+      ctx.rotate(-9 * Math.PI / 180);
+      ctx.fillStyle = "rgba(255, 235, 180, 0.75)";
+      ctx.fillRect(0, 0, 160, 46);
+      ctx.fillStyle = "rgba(255, 220, 160, 0.65)";
+      for (let s = 14; s < 160; s += 28) { ctx.fillRect(s, 0, 7, 46); }
+      ctx.restore();
+
+      /* Washi tape 2 (pink, bottom-right) */
+      ctx.save();
+      ctx.translate(frameX + frameW - 160, frameY + frameH - 12);
+      ctx.rotate(7 * Math.PI / 180);
+      ctx.fillStyle = "rgba(224, 124, 168, 0.32)";
+      ctx.fillRect(0, 0, 160, 46);
+      ctx.fillStyle = "rgba(197, 102, 148, 0.26)";
+      for (let s = 14; s < 160; s += 28) { ctx.fillRect(s, 0, 7, 46); }
+      ctx.restore();
+
+      /* Divider line giữa ảnh và quote */
+      ctx.strokeStyle = "rgba(201, 160, 78, 0.12)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(innerX + 24, imageAreaY + imageAreaH + 10);
+      ctx.lineTo(innerX + innerW - 24, imageAreaY + imageAreaH + 10);
+      ctx.stroke();
+
+      /* Quote text: nằm DƯỚI ảnh, không đè */
+      const quoteY = imageAreaY + imageAreaH + 20;
+      const quoteMaxW = innerW - 48;
+
+      ctx.fillStyle = "#2a2218";
+      ctx.font = 'italic 600 36px "Playfair Display", Georgia';
+      ctx.textAlign = "center";
+      ctx.textBaseline = "top";
+
+      const quoteLines = wrapText(ctx, currentQuote, quoteMaxW).slice(0, 3);
+      const quoteLineHeight = 46;
+      const quoteTextStartY = quoteY + 8;
+
+      quoteLines.forEach((line, index) => {
+        ctx.fillText(line, innerX + innerW / 2, quoteTextStartY + index * quoteLineHeight);
+      });
+
+      /* Date label */
+      ctx.fillStyle = "#c0473f";
+      ctx.font = '800 22px "Be Vietnam Pro", Arial';
+      const dateY = quoteTextStartY + quoteLines.length * quoteLineHeight + 14;
+      ctx.fillText(dateStampEl ? dateStampEl.textContent : "", innerX + innerW / 2, dateY);
+
+      /* Download */
+      const fileName = imageList.length > 1
+        ? "motivation-flip-album-" + (currentIndex + 1) + ".png"
+        : "motivation-flip-album.png";
+      const link = document.createElement("a");
+      link.download = fileName;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+
+      setStatus("Đã export PNG.");
+    }
+
+    const tourSteps = [
+      {
+        targetId: "insertButton",
+        title: "Insert images",
+        text: "Bấm Insert images để chọn ảnh từ máy. Mình không có tạo chức năng lưu trữ nên bạn cứ yên tâm nha!"
+      },
+      {
+        targetId: "quoteButton",
+        title: "Random quote",
+        text: "Bấm Random quote để đổi nhanh sang một câu motivation ngẫu nhiên."
+      },
+      {
+        targetId: "customQuoteButton",
+        title: "Custom quote",
+        text: "Bấm Custom quote nếu muốn tự nhập câu riêng cho poster."
+      },
+      {
+        targetId: "exportButton",
+        title: "Export PNG",
+        text: "Khi đã ưng poster, bấm Export PNG để tải ảnh hiện tại về máy."
+      }
+    ];
+
+    let currentTourStep = 0;
+
+    function clearTourFocus() {
+      document.querySelectorAll(".tour-focus").forEach(el => el.classList.remove("tour-focus"));
+    }
+
+    function positionTourCard(target) {
+      const rect = target.getBoundingClientRect();
+      const gap = 18;
+      const cardWidth = Math.min(390, window.innerWidth - 32);
+      const cardHeight = tourCard.offsetHeight || 240;
+
+      if (window.innerWidth <= 720) return;
+
+      let left = rect.right + gap;
+      let top = rect.top + rect.height / 2 - cardHeight / 2;
+
+      if (left + cardWidth > window.innerWidth - 16) {
+        left = rect.left - cardWidth - gap;
+      }
+
+      if (left < 16) {
+        left = Math.min(window.innerWidth - cardWidth - 16, Math.max(16, rect.left));
+        top = rect.bottom + gap;
+      }
+
+      top = Math.max(16, Math.min(top, window.innerHeight - cardHeight - 16));
+
+      tourCard.style.left = left + "px";
+      tourCard.style.top = top + "px";
+      tourCard.style.bottom = "auto";
+    }
+
+    function renderTourStep() {
+      const step = tourSteps[currentTourStep];
+      const target = document.getElementById(step.targetId);
+
+      clearTourFocus();
+
+      tourStepLabel.textContent = "Step " + (currentTourStep + 1) + " / " + tourSteps.length;
+      tourTitle.textContent = step.title;
+      tourText.textContent = step.text;
+      tourBackButton.disabled = currentTourStep === 0;
+      tourNextButton.textContent = currentTourStep === tourSteps.length - 1 ? "Done" : "Next";
+
+      tourDots.innerHTML = "";
+      tourSteps.forEach((_, index) => {
+        const dot = document.createElement("span");
+        dot.className = "tour-dot" + (index === currentTourStep ? " active" : "");
+        tourDots.appendChild(dot);
+      });
+
+      if (target) {
+        target.classList.add("tour-focus");
+        positionTourCard(target);
+      }
+    }
+
+    function openTour() {
+      currentTourStep = 0;
+      document.body.classList.add("tour-active");
+      tourOverlay.classList.add("visible");
+      renderTourStep();
+    }
+
+    function closeTour() {
+      clearTourFocus();
+      document.body.classList.remove("tour-active");
+      tourOverlay.classList.remove("visible");
+      try { localStorage.setItem("motivationFlipAlbumTourSeen", "yes"); } catch(e) {}
+    }
+
+    function updateCustomQuoteCount() {
+      if (customQuoteInput.value.length > 90) {
+        customQuoteInput.value = customQuoteInput.value.slice(0, 90);
+      }
+      customQuoteCount.textContent = customQuoteInput.value.length + " / 90";
+    }
+
+    function openCustomQuoteModal() {
+      customQuoteInput.value = currentQuote;
+      updateCustomQuoteCount();
+      customQuoteOverlay.classList.add("visible");
+      setTimeout(() => customQuoteInput.focus(), 80);
+    }
+
+    function closeCustomQuoteModal() {
+      customQuoteOverlay.classList.remove("visible");
+    }
+
+    function saveCustomQuote() {
+      const nextQuote = customQuoteInput.value.trim().slice(0, 90);
+      if (!nextQuote) {
+        setStatus("Quote không được để trống.");
+        return;
+      }
+      currentQuote = nextQuote;
+      quoteEl.textContent = currentQuote;
+      setStatus("Đã cập nhật custom quote.");
+      closeCustomQuoteModal();
+    }
+
+    insertButton.addEventListener("click", () => { fileInput.click(); });
+    customQuoteButton.addEventListener("click", openCustomQuoteModal);
+    customQuoteInput.addEventListener("input", updateCustomQuoteCount);
+    closeCustomQuoteButton.addEventListener("click", closeCustomQuoteModal);
+    cancelCustomQuoteButton.addEventListener("click", closeCustomQuoteModal);
+    saveCustomQuoteButton.addEventListener("click", saveCustomQuote);
+    customQuoteOverlay.addEventListener("click", (event) => {
+      if (event.target === customQuoteOverlay) closeCustomQuoteModal();
+    });
+    closeTourButton.addEventListener("click", closeTour);
+    tourBackButton.addEventListener("click", () => {
+      if (currentTourStep > 0) {
+        currentTourStep -= 1;
+        renderTourStep();
+      }
+    });
+    tourNextButton.addEventListener("click", () => {
+      if (currentTourStep === tourSteps.length - 1) {
+        closeTour();
+        return;
+      }
+      currentTourStep += 1;
+      renderTourStep();
+    });
+    window.addEventListener("resize", () => {
+      if (tourOverlay.classList.contains("visible")) renderTourStep();
+    });
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeTour();
+        closeCustomQuoteModal();
+      }
+      if ((event.metaKey || event.ctrlKey) && event.key === "Enter" && customQuoteOverlay.classList.contains("visible")) {
+        saveCustomQuote();
+      }
+      if (event.key === "ArrowRight" && tourOverlay.classList.contains("visible")) tourNextButton.click();
+      if (event.key === "ArrowLeft" && tourOverlay.classList.contains("visible")) tourBackButton.click();
+    });
+
+    /* Vẽ preview có filter retro bằng Canvas API thuần */
+    function renderRetroPreview(image, targetEl) {
+      const maxDim = 800;
+      let dw = image.width, dh = image.height;
+      if (dw > maxDim || dh > maxDim) {
+        const ratio = maxDim / Math.max(dw, dh);
+        dw = Math.round(dw * ratio);
+        dh = Math.round(dh * ratio);
+      }
+      const previewCanvas = document.createElement("canvas");
+      previewCanvas.width = dw;
+      previewCanvas.height = dh;
+      const pCtx = previewCanvas.getContext("2d");
+      pCtx.drawImage(image, 0, 0, dw, dh);
+      applyRetroFilter(previewCanvas);
+
+      targetEl.innerHTML = "";
+      previewCanvas.style.width = "100%";
+      previewCanvas.style.height = "100%";
+      previewCanvas.style.objectFit = "contain";
+      targetEl.appendChild(previewCanvas);
+    }
+
+    function showCurrentImage() {
+      if (imageList.length === 0) return;
+      const img = imageList[currentIndex].image;
+      renderRetroPreview(img, mainImage);
+      updateNavButtons();
+    }
+
+    function updateNavButtons() {
+      const showNav = imageList.length > 1;
+      navLeft.classList.toggle("visible", showNav);
+      navRight.classList.toggle("visible", showNav);
+      imageCounter.classList.toggle("visible", showNav);
+      imageCounter.textContent = (currentIndex + 1) + " / " + imageList.length;
+    }
+
+    fileInput.addEventListener("change", async () => {
+      const files = fileInput.files;
+      if (!files || files.length === 0) return;
+      const validFiles = Array.from(files).filter(f => f.type.startsWith("image/"));
+      if (validFiles.length === 0) {
+        setStatus("Không có file ảnh hợp lệ.");
+        return;
+      }
+      try {
+        setStatus("Đang load " + validFiles.length + " ảnh...");
+        const loaded = await Promise.all(validFiles.map(loadImageFromFile));
+        imageList = loaded.map(r => ({ image: r.image, src: r.src }));
+        currentIndex = 0;
+        exportButton.disabled = false;
+        showCurrentImage();
+        const msg = imageList.length === 1
+          ? "Đã insert ảnh. Có thể export PNG."
+          : "Đã insert " + imageList.length + " ảnh. Dùng mũi tên để chuyển.";
+        setStatus(msg);
+      } catch (error) {
+        console.error(error);
+        setStatus("Không đọc được ảnh. Hãy thử lại.");
+      }
+      fileInput.value = "";
+    });
+
+    navLeft.addEventListener("click", () => {
+      if (imageList.length < 2) return;
+      currentIndex = (currentIndex - 1 + imageList.length) % imageList.length;
+      showCurrentImage();
+    });
+
+    navRight.addEventListener("click", () => {
+      if (imageList.length < 2) return;
+      currentIndex = (currentIndex + 1) % imageList.length;
+      showCurrentImage();
+    });
+
+    quoteButton.addEventListener("click", changeQuote);
+    exportButton.addEventListener("click", exportPoster);
+
+    setToday();
+
+    // Auto-run guided tour after layout is stable.
+    // User can close it immediately with "Skip tour".
+    window.addEventListener("load", () => {
+      requestAnimationFrame(() => setTimeout(openTour, 250));
+    });
+  </script>
+</body>
+</html>
